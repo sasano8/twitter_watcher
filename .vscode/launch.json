@@ -1,0 +1,18 @@
+{
+  // https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Python: app",
+      "type": "python",
+      "request": "launch",
+      "module": "twitter_watcher",
+      "args": [
+        "--interval",
+        "10",
+        "elonmusk",
+      ],
+      "justMyCode": false
+    }
+  ]
+}
