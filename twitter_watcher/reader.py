@@ -34,8 +34,8 @@ class Reader(BaseModel):
         return watchers
 
     async def get_latest_tweet(self, api: tweepy.API) -> Union[TweetText, None]:
-        # self.latest_at = self.latest_at or datetime.datetime.utcnow()
-        self.latest_at = self.latest_at or datetime.datetime(datetime.MINYEAR, 1, 1)
+        self.latest_at = self.latest_at or datetime.datetime.utcnow()
+        # self.latest_at = self.latest_at or datetime.datetime(datetime.MINYEAR, 1, 1)
 
         results = api.user_timeline(id=self.name)[:1]
         status = next(iter(results), None)
@@ -47,8 +47,8 @@ class Reader(BaseModel):
             data = None
 
         if data and (self.latest_at < data.created_at):
+            logger.critical(f"{self.latest_at} < {data.created_at}")
             self.latest_at = data.created_at
-            logger.critical(f"{self.latest_at} > {data.created_at}")
             return data
         else:
             return None
