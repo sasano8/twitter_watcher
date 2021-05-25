@@ -53,6 +53,13 @@ class Reader(BaseModel):
         else:
             return None
 
+    async def exists(self, api: tweepy.API):
+        try:
+            user = api.get_user(id=self.name)
+            return True
+        except Exception as e:
+            return False
+
     async def get_latest_tweet_and_callback(self, api: tweepy.API, callback):
         data = await self.get_latest_tweet(api)
         if data:
@@ -62,3 +69,7 @@ class Reader(BaseModel):
         data = await self.get_latest_tweet(api)
         if data:
             await callback(data.summalize())
+
+    @property
+    def home(self):
+        return f"https://twitter.com/{self.name}"

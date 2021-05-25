@@ -27,12 +27,21 @@ class Watcher:
         self.api = get_api()
         self.readers = Reader.instatiate_by_names(*names)
 
-    async def __call__(self):
+    async def __call__(self, token):
         interval = self.interval
         api = self.api
         readers = self.readers
 
-        while True:
+        print("監視対象の存在をチェックします")
+        for reader in readers:
+            print(f"{reader.home}: {await reader.exists(api)}")
+
+        names = [x.home for x in readers]
+        msg = "次のユーザーのツイートを監視します\n" + "\n".join(names)
+
+        broadcast(msg)
+
+        while not token.is_cancelled:
             logger.info("try retrive latest messages.")
             for reader in readers:
                 try:
@@ -44,6 +53,8 @@ class Watcher:
                     except:
                         pass
             await asyncio.sleep(interval)
+
+        broadcast("ツイートの監視を終了しました")
 
 
 if __name__ == "__main__":
