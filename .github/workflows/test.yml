@@ -7,13 +7,13 @@ on:
 jobs:
   container-test:
     runs-on: ubuntu-latest
-    services:
-      rabbitmq:
-        image: rabbitmq:latest
-        ports:
-          - 5672/tcp
-        # needed because the rabbitmq container does not provide a healthcheck
-        options: --health-cmd "rabbitmqctl node_health_check" --health-interval 10s --health-timeout 5s --health-retries 5
+    # services:
+    #   rabbitmq:
+    #     image: rabbitmq:latest
+    #     ports:
+    #       - 5672/tcp
+    #     # needed because the rabbitmq container does not provide a healthcheck
+    #     options: --health-cmd "rabbitmqctl node_health_check" --health-interval 10s --health-timeout 5s --health-retries 5
     strategy:
       matrix:
         python-version: [3.8]
@@ -26,10 +26,10 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Set up Node v14
-        uses: actions/setup-node@v1
-        with:
-          node-version: 12.x
+      # - name: Set up Node v14
+      #   uses: actions/setup-node@v1
+      #   with:
+      #     node-version: 12.x
 
       - name: Install Poetry
         run: |
@@ -51,24 +51,23 @@ jobs:
         if: steps.cache-venv.outputs.cache-hit != 'true'
         run: poetry install
 
-      - name: Load cached node_module
-        id: cache-node_module
-        uses: actions/cache@v2
-        with:
-          path: ./ui/node_modules
-          key: node_module-${{ runner.os }}-${{ hashFiles('**/ui/package-lock.json') }}
+      # - name: Load cached node_module
+      #   id: cache-node_module
+      #   uses: actions/cache@v2
+      #   with:
+      #     path: ./ui/node_modules
+      #     key: node_module-${{ runner.os }}-${{ hashFiles('**/ui/package-lock.json') }}
 
-      - name: Install Node Modules
-        if: steps.cache-node_module.outputs.cache-hit != 'true'
-        working-directory: ./ui
-        run: npm install
+      # - name: Install Node Modules
+      #   if: steps.cache-node_module.outputs.cache-hit != 'true'
+      #   working-directory: ./ui
+      #   run: npm install
 
       - name: Run Tests
         run: poetry run pytest tests
 
       - name: Check code style with Black
         run: poetry run black --check --diff .
-
-      - name: Check code style with Prettier
-        working-directory: ./ui
-        run: npx prettier --check .
+      # - name: Check code style with Prettier
+      #   working-directory: ./ui
+      #   run: npx prettier --check .
