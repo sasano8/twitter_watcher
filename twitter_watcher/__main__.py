@@ -14,6 +14,7 @@ logger = logging.getLogger(__name__)
 
 @app.command()
 def main(names: List[str], interval: int = 10):
+    print(f"{interval}秒ごとに最新データを取得します")
     watcher = Watcher(*names)
     supervisor = asy.supervise(watcher)
     resutls = supervisor.run()
